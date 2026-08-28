@@ -1,20 +1,19 @@
 [gd_scene format=3 uid="uid://ynen1r3wdt2x"]
 
 [ext_resource type="Script" uid="uid://yo5o7mptt1eh" path="res://scripts/game/level_1.gd" id="1_level_1"]
-[ext_resource type="PackedScene" path="res://scenes/game/parallax_background.tscn" id="2_parallax"]
+[ext_resource type="PackedScene" uid="uid://bwysjv7vygmp" path="res://scenes/game/parallax_background.tscn" id="2_parallax"]
 [ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="3_player"]
+[ext_resource type="FontFile" uid="uid://bphbnuwhri1vg" path="res://assets/fonts/mago2.ttf" id="4_76t5s"]
 [ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="4_pause_menu"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
-size = Vector2(2500, 40)
+size = Vector2(2780, 40)
 
 [node name="Level1" type="Node2D" unique_id=1327072676]
 script = ExtResource("1_level_1")
+ground_surface_y = 162.0
 
 [node name="ParallaxBackground" parent="." unique_id=1430417536 instance=ExtResource("2_parallax")]
-
-[node name="CanvasModulate" type="CanvasModulate" parent="." unique_id=1501217112]
-color = Color(0.06, 0.1, 0.08, 1)
 
 [node name="Environment" type="Node2D" parent="." unique_id=82380979]
 
@@ -22,10 +21,11 @@ color = Color(0.06, 0.1, 0.08, 1)
 position = Vector2(1200, 200)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Environment/ForestPath" unique_id=340608468]
+position = Vector2(-140, 0)
 shape = SubResource("RectangleShape2D_ground")
 
 [node name="GroundColor" type="ColorRect" parent="Environment/ForestPath" unique_id=684029315]
-offset_left = -1250.0
+offset_left = -1529.0
 offset_top = -20.0
 offset_right = 1250.0
 offset_bottom = 20.0
@@ -35,6 +35,7 @@ color = Color(0.04, 0.08, 0.06, 1)
 position = Vector2(40, 180)
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1405003298]
+layer = 10
 
 [node name="TopLeftUI" type="MarginContainer" parent="HUD" unique_id=1798032442]
 offset_right = 120.0
@@ -70,7 +71,8 @@ unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 36)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.85, 0.8, 1)
-theme_override_font_sizes/font_size = 7
+theme_override_fonts/font = ExtResource("4_76t5s")
+theme_override_font_sizes/font_size = 16
 text = "Avanzas por el bosque en penumbras. Escuchas el crujido de hojas distantes..."
 autowrap_mode = 2
 

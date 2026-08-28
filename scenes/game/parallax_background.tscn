@@ -1,9 +1,11 @@
-[gd_scene load_steps=2 format=3 uid="uid://parallax_bg_01"]
+[gd_scene load_steps=5 format=3 uid="uid://bwysjv7vygmp"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sky"]
-bg_color = Color(0.04, 0.07, 0.06, 1)
+[ext_resource type="Texture2D" uid="uid://eihctx4eflbj" path="res://assets/parallax/adrkf_bg_1.png" id="1_376vt"]
+[ext_resource type="Texture2D" uid="uid://0prgktmkfpa6" path="res://assets/parallax/adrkf_bg_2.png" id="2_a6rkr"]
+[ext_resource type="Texture2D" uid="uid://blhcabc5gm3c2" path="res://assets/parallax/adrkf_bg_3.png" id="3_y1mjo"]
+[ext_resource type="Texture2D" uid="uid://dyavluldfkcrm" path="res://assets/parallax/adrkf_bg_4.png" id="4_fay3q"]
 
-[node name="ParallaxBackground" type="ParallaxBackground"]
+[node name="ParallaxBackground" type="Node2D"]
 
 [node name="SkyBackground" type="CanvasLayer" parent="."]
 layer = -100
@@ -16,43 +18,40 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0.05, 0.08, 0.07, 1)
 
-[node name="Layer1_Far" type="ParallaxLayer" parent="."]
+[node name="Background" type="ParallaxBackground" parent="."]
+layer = -1
+
+[node name="Layer1_Far" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.1, 0)
-motion_mirroring = Vector2(384, 0)
+motion_mirroring = Vector2(1152, 0)
 
-[node name="TreesFar" type="ColorRect" parent="Layer1_Far"]
-offset_top = 40.0
-offset_right = 384.0
-offset_bottom = 216.0
-color = Color(0.08, 0.13, 0.1, 0.8)
+[node name="TreesFar" type="Sprite2D" parent="Background/Layer1_Far"]
+texture = ExtResource("1_376vt")
+centered = false
 
-[node name="Layer2_MidFar" type="ParallaxLayer" parent="."]
+[node name="Layer2_MidFar" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.3, 0)
-motion_mirroring = Vector2(384, 0)
+motion_mirroring = Vector2(1152, 0)
 
-[node name="TreesMidFar" type="ColorRect" parent="Layer2_MidFar"]
-offset_top = 80.0
-offset_right = 384.0
-offset_bottom = 216.0
-color = Color(0.07, 0.16, 0.12, 0.9)
+[node name="TreesMidFar" type="Sprite2D" parent="Background/Layer2_MidFar"]
+texture = ExtResource("2_a6rkr")
+centered = false
 
-[node name="Layer3_MidNear" type="ParallaxLayer" parent="."]
+[node name="Layer3_MidNear" type="ParallaxLayer" parent="Background"]
 motion_scale = Vector2(0.6, 0)
-motion_mirroring = Vector2(384, 0)
+motion_mirroring = Vector2(1152, 0)
 
-[node name="TreesMidNear" type="ColorRect" parent="Layer3_MidNear"]
-offset_top = 130.0
-offset_right = 384.0
-offset_bottom = 216.0
-color = Color(0.05, 0.14, 0.09, 1)
+[node name="TreesMidNear" type="Sprite2D" parent="Background/Layer3_MidNear"]
+texture = ExtResource("3_y1mjo")
+centered = false
 
-[node name="Layer4_Foreground" type="ParallaxLayer" parent="."]
-layer = 10
+[node name="Foreground" type="ParallaxBackground" parent="."]
+layer = 1
+
+[node name="Layer4_Foreground" type="ParallaxLayer" parent="Foreground"]
 motion_scale = Vector2(1.2, 0)
-motion_mirroring = Vector2(384, 0)
+motion_mirroring = Vector2(1152, 0)
 
-[node name="Fog" type="ColorRect" parent="Layer4_Foreground"]
-offset_top = 180.0
-offset_right = 384.0
-offset_bottom = 216.0
-color = Color(0.03, 0.09, 0.06, 0.35)
+[node name="TreesForeground" type="Sprite2D" parent="Foreground/Layer4_Foreground"]
+texture = ExtResource("4_fay3q")
+centered = false

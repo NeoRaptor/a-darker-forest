@@ -3,6 +3,14 @@ extends Node2D
 # Level 1 Controller (Un Bosque Oscuro)
 # Handles parallax scrolling, GDD UI HUD updating, and input shortcuts.
 
+## Altura (Y) de la superficie del suelo. Mueve este valor y dale Play para
+## ver el resultado: la plataforma y el jugador se reposicionan juntos.
+@export var ground_surface_y: float = 180.0
+
+@onready var forest_path: StaticBody2D = $Environment/ForestPath
+@onready var ground_collision: CollisionShape2D = $Environment/ForestPath/CollisionShape2D
+@onready var player: CharacterBody2D = $Player
+
 @onready var hp_label: Label = %HPLabel
 @onready var log_label: Label = %LogLabel
 @onready var shotgun_label: Label = %ShotgunLabel
@@ -12,6 +20,7 @@ extends Node2D
 @onready var pause_menu: Control = %PauseMenu
 
 func _ready() -> void:
+	_apply_ground_surface_y()
 	GameManager.hp_changed.connect(_update_hud_display)
 	GameManager.resources_changed.connect(_update_hud_display)
 	GameManager.log_message_posted.connect(update_log_text)
@@ -35,6 +44,12 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _report_resource_use(success: bool, success_text: String, fail_text: String) -> void:
 	update_log_text(success_text if success else fail_text)
+
+func _apply_ground_surface_y() -> void:
+	var shape := ground_collision.shape as RectangleShape2D
+	var half_height := shape.size.y / 2.0
+	forest_path.position.y = ground_surface_y + half_height
+	player.position.y = ground_surface_y
 
 func _update_hud_display(_arg = null) -> void:
 	# Update HP Hearts

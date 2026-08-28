@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://credits_menu_scene_01"]
+[gd_scene load_steps=3 format=3 uid="uid://credits_menu_scene_01"]
 
 [ext_resource type="Script" path="res://scripts/ui/credits_menu.gd" id="1_credits_menu"]
+[ext_resource type="FontFile" path="res://assets/fonts/BitcountGridSingle_Roman-Light.ttf" id="2_bitcount"]
 
 [node name="CreditsMenu" type="Control"]
 layout_mode = 3
@@ -49,6 +50,7 @@ layout_mode = 2
 [node name="CreditsText" type="Label" parent="MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.85, 0.9, 1)
+theme_override_fonts/font = ExtResource("2_bitcount")
 theme_override_font_sizes/font_size = 8
 text = "UN BOSQUE OSCURO
 

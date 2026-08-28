@@ -55,7 +55,7 @@ texture_scale = 1.4
 [node name="Camera2D" type="Camera2D" parent="."]
 unique_name_in_owner = true
 position = Vector2(60, -30)
-process_callback = 0
+process_callback = 1
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
 drag_horizontal_enabled = true
