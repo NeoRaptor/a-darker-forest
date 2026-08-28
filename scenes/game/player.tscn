@@ -1,0 +1,65 @@
+[gd_scene load_steps=7 format=3 uid="uid://player_scene_01"]
+
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_hunter"]
+size = Vector2(10, 24)
+
+[sub_resource type="Gradient" id="Gradient_eyes"]
+colors = PackedColorArray(1, 0.95, 0.7, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_eyes"]
+gradient = SubResource("Gradient_eyes")
+width = 16
+height = 16
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="Gradient" id="Gradient_torch"]
+colors = PackedColorArray(0.9, 0.8, 0.5, 1, 0, 0, 0, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_torch"]
+gradient = SubResource("Gradient_torch")
+width = 128
+height = 128
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_player")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -12)
+shape = SubResource("RectangleShape2D_hunter")
+
+[node name="HunterSprite" type="ColorRect" parent="."]
+unique_name_in_owner = true
+offset_left = -5.0
+offset_top = -24.0
+offset_right = 5.0
+color = Color(0.08, 0.1, 0.09, 1)
+
+[node name="EyesLight" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(2, -20)
+energy = 1.2
+texture = SubResource("GradientTexture2D_eyes")
+
+[node name="TorchLight" type="PointLight2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(0, -12)
+energy = 1.4
+texture = SubResource("GradientTexture2D_torch")
+texture_scale = 1.4
+
+[node name="Camera2D" type="Camera2D" parent="."]
+unique_name_in_owner = true
+position = Vector2(60, -30)
+process_callback = 0
+position_smoothing_enabled = true
+position_smoothing_speed = 6.0
+drag_horizontal_enabled = true
+drag_vertical_enabled = true
+drag_left_margin = 0.15
+drag_right_margin = 0.15
+editor_draw_limits = true

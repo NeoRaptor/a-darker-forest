@@ -1,0 +1,58 @@
+[gd_scene load_steps=2 format=3 uid="uid://parallax_bg_01"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sky"]
+bg_color = Color(0.04, 0.07, 0.06, 1)
+
+[node name="ParallaxBackground" type="ParallaxBackground"]
+
+[node name="SkyBackground" type="CanvasLayer" parent="."]
+layer = -100
+
+[node name="ColorRect" type="ColorRect" parent="SkyBackground"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.05, 0.08, 0.07, 1)
+
+[node name="Layer1_Far" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.1, 0)
+motion_mirroring = Vector2(384, 0)
+
+[node name="TreesFar" type="ColorRect" parent="Layer1_Far"]
+offset_top = 40.0
+offset_right = 384.0
+offset_bottom = 216.0
+color = Color(0.08, 0.13, 0.1, 0.8)
+
+[node name="Layer2_MidFar" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.3, 0)
+motion_mirroring = Vector2(384, 0)
+
+[node name="TreesMidFar" type="ColorRect" parent="Layer2_MidFar"]
+offset_top = 80.0
+offset_right = 384.0
+offset_bottom = 216.0
+color = Color(0.07, 0.16, 0.12, 0.9)
+
+[node name="Layer3_MidNear" type="ParallaxLayer" parent="."]
+motion_scale = Vector2(0.6, 0)
+motion_mirroring = Vector2(384, 0)
+
+[node name="TreesMidNear" type="ColorRect" parent="Layer3_MidNear"]
+offset_top = 130.0
+offset_right = 384.0
+offset_bottom = 216.0
+color = Color(0.05, 0.14, 0.09, 1)
+
+[node name="Layer4_Foreground" type="ParallaxLayer" parent="."]
+layer = 10
+motion_scale = Vector2(1.2, 0)
+motion_mirroring = Vector2(384, 0)
+
+[node name="Fog" type="ColorRect" parent="Layer4_Foreground"]
+offset_top = 180.0
+offset_right = 384.0
+offset_bottom = 216.0
+color = Color(0.03, 0.09, 0.06, 0.35)

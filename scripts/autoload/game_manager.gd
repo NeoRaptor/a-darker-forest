@@ -1,0 +1,153 @@
+extends Node
+
+# Game Manager Autoload (Un Bosque Oscuro)
+# Manages gameplay state, resources, marbles bag, and karma/ending evaluation.
+
+signal hp_changed(current_hp: int)
+signal resources_changed()
+signal log_message_posted(text: String)
+signal game_over_triggered(ending_type: String)
+
+enum GameState { MENU, PLAYING, PAUSED, ENCOUNTER, GAME_OVER }
+
+var current_state: GameState = GameState.MENU
+
+# Player Resources (GDD Section 6)
+var player_hp: int = 4
+var max_hp: int = 4
+var bullets: int = 4
+var kerosene: int = 5
+var film_rolls: int = 3
+
+# Stats & High Replayability
+var elapsed_time: float = 0.0
+var best_time: float = 999999.0
+var is_new_record: bool = false
+var distance_traversed: float = 0.0
+
+# Karma Tracking (GDD Section 8)
+var violence_shots: int = 0
+var innocent_kills: int = 0
+var threats_neutralized: int = 0
+var social_helps: int = 0
+var social_ignores: int = 0
+var witness_survivors: int = 0
+
+# Shout cooldown (GDD 4.5: costo natural del grito, no consume stock)
+const SHOUT_COOLDOWN_SECONDS: float = 2.0
+var shout_cooldown_remaining: float = 0.0
+
+const MAIN_MENU_SCENE: String = "res://scenes/ui/main_menu.tscn"
+const LEVEL_1_SCENE: String = "res://scenes/game/level_1.tscn"
+const GAME_OVER_SCENE: String = "res://scenes/ui/game_over.tscn"
+const SETTINGS_SCENE: String = "res://scenes/ui/settings_menu.tscn"
+const CREDITS_SCENE: String = "res://scenes/ui/credits_menu.tscn"
+
+func _ready() -> void:
+	# GDD 4.1 pide input A/D; ui_left/ui_right vienen mapeados solo a flechas por defecto.
+	_bind_key_if_missing("ui_left", KEY_A)
+	_bind_key_if_missing("ui_right", KEY_D)
+
+func _bind_key_if_missing(action: String, keycode: Key) -> void:
+	for event in InputMap.action_get_events(action):
+		if event is InputEventKey and event.keycode == keycode:
+			return
+	var key_event := InputEventKey.new()
+	key_event.keycode = keycode
+	InputMap.action_add_event(action, key_event)
+
+func _process(delta: float) -> void:
+	if current_state == GameState.PLAYING:
+		elapsed_time += delta
+	if shout_cooldown_remaining > 0.0:
+		shout_cooldown_remaining = max(0.0, shout_cooldown_remaining - delta)
+		if shout_cooldown_remaining == 0.0:
+			resources_changed.emit()
+
+func start_game() -> void:
+	elapsed_time = 0.0
+	distance_traversed = 0.0
+	player_hp = max_hp
+	bullets = 4
+	kerosene = 5
+	film_rolls = 3
+	shout_cooldown_remaining = 0.0
+	violence_shots = 0
+	innocent_kills = 0
+	threats_neutralized = 0
+	social_helps = 0
+	social_ignores = 0
+	witness_survivors = 0
+	is_new_record = false
+	current_state = GameState.PLAYING
+	get_tree().paused = false
+	get_tree().change_scene_to_file(LEVEL_1_SCENE)
+
+func restart_game() -> void:
+	start_game()
+
+func take_damage(amount: int) -> void:
+	player_hp = max(0, player_hp - amount)
+	hp_changed.emit(player_hp)
+	if player_hp <= 0:
+		trigger_game_over("muerto")
+
+# Resource consumption (GDD 4.5 / 6). Returns false when the resource is depleted.
+func use_bullet() -> bool:
+	if bullets <= 0:
+		return false
+	bullets -= 1
+	resources_changed.emit()
+	return true
+
+func use_kerosene() -> bool:
+	if kerosene <= 0:
+		return false
+	kerosene -= 1
+	resources_changed.emit()
+	return true
+
+func use_film() -> bool:
+	if film_rolls <= 0:
+		return false
+	film_rolls -= 1
+	resources_changed.emit()
+	return true
+
+func try_shout() -> bool:
+	if shout_cooldown_remaining > 0.0:
+		return false
+	shout_cooldown_remaining = SHOUT_COOLDOWN_SECONDS
+	resources_changed.emit()
+	return true
+
+func is_shout_ready() -> bool:
+	return shout_cooldown_remaining <= 0.0
+
+func trigger_game_over(ending_reason: String) -> void:
+	if current_state == GameState.GAME_OVER:
+		return
+	
+	current_state = GameState.GAME_OVER
+	if elapsed_time < best_time and ending_reason != "muerto":
+		best_time = elapsed_time
+		is_new_record = true
+
+	game_over_triggered.emit(ending_reason)
+	get_tree().change_scene_to_file(GAME_OVER_SCENE)
+
+func evaluate_final_ending() -> String:
+	# Ending logic based on GDD Section 8
+	if innocent_kills > 0 and witness_survivors > 0:
+		return "Condenado a prisión"
+	elif innocent_kills > 0 or (violence_shots >= 3 and social_ignores >= 3):
+		return "Psicópata"
+	elif threats_neutralized >= 2 and social_helps >= 1:
+		return "Héroe nacional"
+	else:
+		return "Caminante perdido"
+
+func go_to_main_menu() -> void:
+	current_state = GameState.MENU
+	get_tree().paused = false
+	get_tree().change_scene_to_file(MAIN_MENU_SCENE)
