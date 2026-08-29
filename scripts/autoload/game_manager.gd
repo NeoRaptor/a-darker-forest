@@ -7,6 +7,8 @@ signal hp_changed(current_hp: int)
 signal resources_changed()
 signal log_message_posted(text: String)
 signal game_over_triggered(ending_type: String)
+signal kerosene_used()
+signal film_used()
 
 enum GameState { MENU, PLAYING, PAUSED, ENCOUNTER, GAME_OVER }
 
@@ -37,6 +39,17 @@ var witness_survivors: int = 0
 const SHOUT_COOLDOWN_SECONDS: float = 2.0
 var shout_cooldown_remaining: float = 0.0
 
+# Cooldowns por recurso: evitan gastar todo de una y alimentan las barras del HUD.
+# La antorcha usa su cooldown como duración de efecto (visión ampliada mientras dura).
+# kerosene_cooldown_duration no es const: Player la sobreescribe con su valor
+# exportado (@export torch_duration) al arrancar, para poder ajustarla desde el Inspector.
+const SHOTGUN_COOLDOWN_SECONDS: float = 1.0
+var kerosene_cooldown_duration: float = 4.0
+const CAMERA_COOLDOWN_SECONDS: float = 1.5
+var shotgun_cooldown_remaining: float = 0.0
+var kerosene_cooldown_remaining: float = 0.0
+var camera_cooldown_remaining: float = 0.0
+
 const MAIN_MENU_SCENE: String = "res://scenes/ui/main_menu.tscn"
 const LEVEL_1_SCENE: String = "res://scenes/game/level_1.tscn"
 const GAME_OVER_SCENE: String = "res://scenes/ui/game_over.tscn"
@@ -63,6 +76,9 @@ func _process(delta: float) -> void:
 		shout_cooldown_remaining = max(0.0, shout_cooldown_remaining - delta)
 		if shout_cooldown_remaining == 0.0:
 			resources_changed.emit()
+	shotgun_cooldown_remaining = max(0.0, shotgun_cooldown_remaining - delta)
+	kerosene_cooldown_remaining = max(0.0, kerosene_cooldown_remaining - delta)
+	camera_cooldown_remaining = max(0.0, camera_cooldown_remaining - delta)
 
 func start_game() -> void:
 	elapsed_time = 0.0
@@ -72,6 +88,9 @@ func start_game() -> void:
 	kerosene = 5
 	film_rolls = 3
 	shout_cooldown_remaining = 0.0
+	shotgun_cooldown_remaining = 0.0
+	kerosene_cooldown_remaining = 0.0
+	camera_cooldown_remaining = 0.0
 	violence_shots = 0
 	innocent_kills = 0
 	threats_neutralized = 0
@@ -92,26 +111,32 @@ func take_damage(amount: int) -> void:
 	if player_hp <= 0:
 		trigger_game_over("muerto")
 
-# Resource consumption (GDD 4.5 / 6). Returns false when the resource is depleted.
+# Resource consumption (GDD 4.5 / 6). Returns false when el recurso está agotado
+# o todavía en cooldown (evita que el jugador desperdicie todo de una).
 func use_bullet() -> bool:
-	if bullets <= 0:
+	if bullets <= 0 or shotgun_cooldown_remaining > 0.0:
 		return false
 	bullets -= 1
+	shotgun_cooldown_remaining = SHOTGUN_COOLDOWN_SECONDS
 	resources_changed.emit()
 	return true
 
 func use_kerosene() -> bool:
-	if kerosene <= 0:
+	if kerosene <= 0 or kerosene_cooldown_remaining > 0.0:
 		return false
 	kerosene -= 1
+	kerosene_cooldown_remaining = kerosene_cooldown_duration
 	resources_changed.emit()
+	kerosene_used.emit()
 	return true
 
 func use_film() -> bool:
-	if film_rolls <= 0:
+	if film_rolls <= 0 or camera_cooldown_remaining > 0.0:
 		return false
 	film_rolls -= 1
+	camera_cooldown_remaining = CAMERA_COOLDOWN_SECONDS
 	resources_changed.emit()
+	film_used.emit()
 	return true
 
 func try_shout() -> bool:
@@ -123,6 +148,24 @@ func try_shout() -> bool:
 
 func is_shout_ready() -> bool:
 	return shout_cooldown_remaining <= 0.0
+
+func is_bullet_ready() -> bool:
+	return shotgun_cooldown_remaining <= 0.0
+
+func is_kerosene_ready() -> bool:
+	return kerosene_cooldown_remaining <= 0.0
+
+func is_camera_ready() -> bool:
+	return camera_cooldown_remaining <= 0.0
+
+func get_shotgun_cooldown_fraction() -> float:
+	return shotgun_cooldown_remaining / SHOTGUN_COOLDOWN_SECONDS
+
+func get_kerosene_cooldown_fraction() -> float:
+	return kerosene_cooldown_remaining / kerosene_cooldown_duration
+
+func get_camera_cooldown_fraction() -> float:
+	return camera_cooldown_remaining / CAMERA_COOLDOWN_SECONDS
 
 func trigger_game_over(ending_reason: String) -> void:
 	if current_state == GameState.GAME_OVER:

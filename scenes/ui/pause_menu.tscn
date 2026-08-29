@@ -1,8 +1,8 @@
-[gd_scene load_steps=2 format=3 uid="uid://pause_menu_scene_01"]
+[gd_scene format=3 uid="uid://5akqq1ospjlj"]
 
-[ext_resource type="Script" path="res://scripts/ui/pause_menu.gd" id="1_pause_menu"]
+[ext_resource type="Script" uid="uid://cq47gdvutjwdt" path="res://scripts/ui/pause_menu.gd" id="1_pause_menu"]
 
-[node name="PauseMenu" type="Control"]
+[node name="PauseMenu" type="Control" unique_id=1795489411]
 process_mode = 3
 layout_mode = 3
 anchors_preset = 15
@@ -12,7 +12,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_pause_menu")
 
-[node name="Overlay" type="ColorRect" parent="."]
+[node name="Overlay" type="ColorRect" parent="." unique_id=1857582343]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +21,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.7)
 
-[node name="MarginContainer" type="MarginContainer" parent="."]
+[node name="MarginContainer" type="MarginContainer" parent="." unique_id=2105713587]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,50 +33,51 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 15
 theme_override_constants/margin_bottom = 10
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer" unique_id=1663375127]
 layout_mode = 2
 alignment = 1
 
-[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer"]
+[node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=1187798586]
 layout_mode = 2
 theme_override_font_sizes/font_size = 14
 text = "JUEGO EN PAUSA"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer"]
+[node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=545701934]
+visible = false
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
-[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer"]
+[node name="ButtonsVBox" type="VBoxContainer" parent="MarginContainer/VBoxContainer" unique_id=1348445958]
 custom_minimum_size = Vector2(120, 0)
 layout_mode = 2
 size_flags_horizontal = 4
 theme_override_constants/separation = 4
 
-[node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="ResumeButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=1646477271]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 18)
 layout_mode = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 8
 text = "REANUDAR"
 
-[node name="RestartButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="RestartButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=180516431]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 18)
 layout_mode = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 8
 text = "REINICIAR NIVEL"
 
-[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=1279069584]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 18)
 layout_mode = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 8
 text = "AJUSTES"
 
-[node name="MenuButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox"]
+[node name="MenuButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=105736739]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(110, 18)
 layout_mode = 2
-theme_override_font_sizes/font_size = 9
+theme_override_font_sizes/font_size = 8
 text = "MENÚ PRINCIPAL"

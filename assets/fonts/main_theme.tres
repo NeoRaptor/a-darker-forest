@@ -1,6 +1,6 @@
-[gd_resource type="Theme" load_steps=2 format=3]
+[gd_resource type="Theme" format=3 uid="uid://8k4l6icdlxcx"]
 
-[ext_resource type="FontFile" path="res://assets/fonts/mago2.ttf" id="1_mago2"]
+[ext_resource type="FontFile" uid="uid://byrleo62oanrk" path="res://assets/fonts/BitcountGridSingle_Roman-Light.ttf" id="1_bitcount"]
 
 [resource]
-default_font = ExtResource("1_mago2")
+default_font = ExtResource("1_bitcount")

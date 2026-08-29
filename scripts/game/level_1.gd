@@ -11,12 +11,19 @@ extends Node2D
 @onready var ground_collision: CollisionShape2D = $Environment/ForestPath/CollisionShape2D
 @onready var player: CharacterBody2D = $Player
 
-@onready var hp_label: Label = %HPLabel
+@onready var heart_1: TextureRect = %Heart1
+@onready var heart_2: TextureRect = %Heart2
+@onready var heart_3: TextureRect = %Heart3
 @onready var log_label: Label = %LogLabel
 @onready var shotgun_label: Label = %ShotgunLabel
 @onready var kerosene_label: Label = %KeroseneLabel
 @onready var camera_label: Label = %CameraLabel
-@onready var shout_label: Label = %ShoutLabel
+@onready var shotgun_usar_button: Button = %ShotgunUsarButton
+@onready var kerosene_usar_button: Button = %KeroseneUsarButton
+@onready var camera_usar_button: Button = %CameraUsarButton
+@onready var shotgun_cooldown_bar: ProgressBar = %ShotgunCooldownBar
+@onready var kerosene_cooldown_bar: ProgressBar = %KeroseneCooldownBar
+@onready var camera_cooldown_bar: ProgressBar = %CameraCooldownBar
 @onready var pause_menu: Control = %PauseMenu
 
 func _ready() -> void:
@@ -24,6 +31,9 @@ func _ready() -> void:
 	GameManager.hp_changed.connect(_update_hud_display)
 	GameManager.resources_changed.connect(_update_hud_display)
 	GameManager.log_message_posted.connect(update_log_text)
+	shotgun_usar_button.pressed.connect(_use_shotgun)
+	kerosene_usar_button.pressed.connect(_use_kerosene)
+	camera_usar_button.pressed.connect(_use_camera)
 	_update_hud_display()
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -34,16 +44,51 @@ func _unhandled_input(event: InputEvent) -> void:
 
 	match event.keycode:
 		KEY_1:
-			_report_resource_use(GameManager.use_bullet(), "Preparas la escopeta.", "No te quedan balas.")
+			_use_shotgun()
 		KEY_2:
-			_report_resource_use(GameManager.use_kerosene(), "Enciendes la antorcha.", "Te quedaste sin kerosene.")
+			_use_kerosene()
 		KEY_3:
-			_report_resource_use(GameManager.use_film(), "Tomas una fotografía.", "No te queda película.")
-		KEY_4:
+			_use_camera()
+		KEY_SPACE:
 			_report_resource_use(GameManager.try_shout(), "\"¡Hola!?\" — tu voz se pierde entre los árboles.", "Necesitas esperar antes de volver a gritar.")
+
+func _use_shotgun() -> void:
+	if GameManager.bullets <= 0:
+		update_log_text("No te quedan balas.")
+	elif not GameManager.is_bullet_ready():
+		update_log_text("La escopeta todavía se está recargando.")
+	else:
+		GameManager.use_bullet()
+		update_log_text("Preparas la escopeta.")
+
+func _use_kerosene() -> void:
+	if GameManager.kerosene <= 0:
+		update_log_text("Te quedaste sin kerosene.")
+	elif not GameManager.is_kerosene_ready():
+		update_log_text("La antorcha todavía está encendida.")
+	else:
+		GameManager.use_kerosene()
+		update_log_text("Enciendes la antorcha.")
+
+func _use_camera() -> void:
+	if GameManager.film_rolls <= 0:
+		update_log_text("No te queda película.")
+	elif not GameManager.is_camera_ready():
+		update_log_text("La cámara todavía se está recargando.")
+	else:
+		GameManager.use_film()
+		update_log_text("Tomas una fotografía.")
 
 func _report_resource_use(success: bool, success_text: String, fail_text: String) -> void:
 	update_log_text(success_text if success else fail_text)
+
+func _process(_delta: float) -> void:
+	shotgun_cooldown_bar.value = GameManager.get_shotgun_cooldown_fraction()
+	kerosene_cooldown_bar.value = GameManager.get_kerosene_cooldown_fraction()
+	camera_cooldown_bar.value = GameManager.get_camera_cooldown_fraction()
+	shotgun_usar_button.disabled = GameManager.bullets <= 0 or not GameManager.is_bullet_ready()
+	kerosene_usar_button.disabled = GameManager.kerosene <= 0 or not GameManager.is_kerosene_ready()
+	camera_usar_button.disabled = GameManager.film_rolls <= 0 or not GameManager.is_camera_ready()
 
 func _apply_ground_surface_y() -> void:
 	var shape := ground_collision.shape as RectangleShape2D
@@ -52,17 +97,15 @@ func _apply_ground_surface_y() -> void:
 	player.position.y = ground_surface_y
 
 func _update_hud_display(_arg = null) -> void:
-	# Update HP Hearts
-	var hearts = ""
-	for i in range(GameManager.player_hp):
-		hearts += "♥ "
-	hp_label.text = hearts.strip_edges()
+	# Update HP hearts (el pulso siempre visible; los contornos desaparecen con el daño)
+	heart_1.visible = GameManager.player_hp >= 2
+	heart_2.visible = GameManager.player_hp >= 3
+	heart_3.visible = GameManager.player_hp >= 4
 
 	# Update Resources
-	shotgun_label.text = "[1] Escopeta: %d" % GameManager.bullets
-	kerosene_label.text = "[2] Kerosene: %d" % GameManager.kerosene
-	camera_label.text = "[3] Cámara: %d" % GameManager.film_rolls
-	shout_label.text = "[4] Gritar (Listo)" if GameManager.is_shout_ready() else "[4] Gritar (Enfriando)"
+	shotgun_label.text = "x %d" % GameManager.bullets
+	kerosene_label.text = "x %d" % GameManager.kerosene
+	camera_label.text = "x %d" % GameManager.film_rolls
 
 func update_log_text(text: String) -> void:
 	if log_label:

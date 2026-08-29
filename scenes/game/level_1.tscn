@@ -2,16 +2,64 @@
 
 [ext_resource type="Script" uid="uid://yo5o7mptt1eh" path="res://scripts/game/level_1.gd" id="1_level_1"]
 [ext_resource type="PackedScene" uid="uid://bwysjv7vygmp" path="res://scenes/game/parallax_background.tscn" id="2_parallax"]
-[ext_resource type="PackedScene" path="res://scenes/game/player.tscn" id="3_player"]
-[ext_resource type="FontFile" uid="uid://bphbnuwhri1vg" path="res://assets/fonts/mago2.ttf" id="4_76t5s"]
-[ext_resource type="PackedScene" path="res://scenes/ui/pause_menu.tscn" id="4_pause_menu"]
+[ext_resource type="PackedScene" uid="uid://i6xxdok7i61o" path="res://scenes/game/player.tscn" id="3_player"]
+[ext_resource type="FontFile" uid="uid://byrleo62oanrk" path="res://assets/fonts/BitcountGridSingle_Roman-Light.ttf" id="4_76t5s"]
+[ext_resource type="PackedScene" uid="uid://5akqq1ospjlj" path="res://scenes/ui/pause_menu.tscn" id="4_pause_menu"]
+[ext_resource type="Texture2D" uid="uid://bjla34t6cegeu" path="res://assets/ui/icon_heart_pulse.png" id="6_heart_pulse"]
+[ext_resource type="Texture2D" uid="uid://0riccqwlxqme" path="res://assets/ui/icon_heart_outline.png" id="7_heart_outline"]
+[ext_resource type="Texture2D" uid="uid://d2fuu0h3alvyw" path="res://assets/ui/icon_clock.png" id="8_clock"]
+[ext_resource type="Texture2D" uid="uid://bhucmoifh8ttv" path="res://assets/ui/icon_torch.png" id="9_torch"]
+[ext_resource type="Texture2D" uid="uid://de15ab1e2cohw" path="res://assets/ui/icon_camera.png" id="10_camera"]
+[ext_resource type="Texture2D" uid="uid://b123kygvjtn5a" path="res://assets/ui/icon_shotgun.png" id="11_shotgun"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(2780, 40)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_log_panel"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.054902, 0.054902, 0, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.305882, 0.305882, 0.203922, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bordered"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.05, 0.07, 0.05, 0.55)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.305882, 0.305882, 0.203922, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_bordered_disabled"]
+content_margin_left = 6.0
+content_margin_top = 3.0
+content_margin_right = 6.0
+content_margin_bottom = 3.0
+bg_color = Color(0.05, 0.07, 0.05, 0.3)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.35, 0.38, 0.3, 0.6)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cd_bg"]
+bg_color = Color(0.05, 0.07, 0.05, 0.4)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cd_fill"]
+bg_color = Color(0.305882, 0.305882, 0.203922, 1)
+
 [node name="Level1" type="Node2D" unique_id=1327072676]
 script = ExtResource("1_level_1")
-ground_surface_y = 162.0
+ground_surface_y = 166.0
 
 [node name="ParallaxBackground" parent="." unique_id=1430417536 instance=ExtResource("2_parallax")]
 
@@ -25,6 +73,7 @@ position = Vector2(-140, 0)
 shape = SubResource("RectangleShape2D_ground")
 
 [node name="GroundColor" type="ColorRect" parent="Environment/ForestPath" unique_id=684029315]
+visible = false
 offset_left = -1529.0
 offset_top = -20.0
 offset_right = 1250.0
@@ -33,86 +82,277 @@ color = Color(0.04, 0.08, 0.06, 1)
 
 [node name="Player" parent="." unique_id=2099633794 instance=ExtResource("3_player")]
 position = Vector2(40, 180)
+move_speed = 35.0
+vision_scale_normal = 1.2
+vision_torch_multiplier = 2.0
+vision_mask_opacity = 0.8
+torch_duration = 25.0
+camera_flash_duration = 0.2
 
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1405003298]
 layer = 10
 
 [node name="TopLeftUI" type="MarginContainer" parent="HUD" unique_id=1798032442]
-offset_right = 120.0
-offset_bottom = 30.0
-theme_override_constants/margin_left = 6
-theme_override_constants/margin_top = 6
+offset_right = 130.0
+offset_bottom = 45.0
+theme_override_constants/margin_left = 22
+theme_override_constants/margin_top = 24
 
 [node name="HPBox" type="HBoxContainer" parent="HUD/TopLeftUI" unique_id=2007575425]
 layout_mode = 2
+theme_override_constants/separation = 3
 
-[node name="HPLabel" type="Label" parent="HUD/TopLeftUI/HPBox" unique_id=1509536423]
-unique_name_in_owner = true
+[node name="HeartPulse" type="TextureRect" parent="HUD/TopLeftUI/HPBox" unique_id=1546821459]
+texture_filter = 1
+custom_minimum_size = Vector2(20, 20)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.85, 0.3, 0.3, 1)
-theme_override_font_sizes/font_size = 8
-text = "♥ ♥ ♥ ♥"
+texture = ExtResource("6_heart_pulse")
+expand_mode = 1
+stretch_mode = 2
+
+[node name="Heart1" type="TextureRect" parent="HUD/TopLeftUI/HPBox" unique_id=1550904311]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("7_heart_outline")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart2" type="TextureRect" parent="HUD/TopLeftUI/HPBox" unique_id=436634659]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("7_heart_outline")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Heart3" type="TextureRect" parent="HUD/TopLeftUI/HPBox" unique_id=1664553487]
+unique_name_in_owner = true
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("7_heart_outline")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="TopRightUI" type="MarginContainer" parent="HUD" unique_id=1617406120]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -33.0
+offset_bottom = 35.0
+grow_horizontal = 0
+theme_override_constants/margin_top = 24
+theme_override_constants/margin_right = 22
+
+[node name="ClockIcon" type="TextureRect" parent="HUD/TopRightUI" unique_id=1297783475]
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("8_clock")
+expand_mode = 1
+stretch_mode = 5
 
 [node name="BottomLeftLog" type="MarginContainer" parent="HUD" unique_id=584983479]
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -50.0
-offset_right = 220.0
-grow_vertical = 0
-theme_override_constants/margin_left = 6
+offset_top = 132.0
+offset_right = 120.0
+offset_bottom = 232.0
+theme_override_constants/margin_left = 22
 theme_override_constants/margin_bottom = 6
 
 [node name="LogPanel" type="PanelContainer" parent="HUD/BottomLeftLog" unique_id=1727963006]
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_log_panel")
 
 [node name="LogLabel" type="Label" parent="HUD/BottomLeftLog/LogPanel" unique_id=1949996701]
 unique_name_in_owner = true
-custom_minimum_size = Vector2(200, 36)
+custom_minimum_size = Vector2(86, 60)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.8, 0.85, 0.8, 1)
+size_flags_vertical = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_constants/line_spacing = 0
 theme_override_fonts/font = ExtResource("4_76t5s")
-theme_override_font_sizes/font_size = 16
+theme_override_font_sizes/font_size = 7
 text = "Avanzas por el bosque en penumbras. Escuchas el crujido de hojas distantes..."
 autowrap_mode = 2
+
+[node name="EncounterActionsUI" type="VBoxContainer" parent="HUD" unique_id=1723968502]
+offset_left = 164.0
+offset_top = 144.0
+offset_right = 264.0
+offset_bottom = 184.0
+theme_override_constants/separation = 9
+
+[node name="QuietoButton" type="Button" parent="HUD/EncounterActionsUI" unique_id=1997403930]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+theme_override_styles/normal = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bordered_disabled")
+text = "Quedarse quieto"
+
+[node name="IgnorarButton" type="Button" parent="HUD/EncounterActionsUI" unique_id=1350881057]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 8
+focus_mode = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+theme_override_styles/normal = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bordered_disabled")
+text = "Ignorar"
 
 [node name="RightToolsUI" type="MarginContainer" parent="HUD" unique_id=214546557]
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -110.0
-offset_bottom = 100.0
+offset_left = -94.0
+offset_top = 144.0
+offset_bottom = 216.0
 grow_horizontal = 0
-theme_override_constants/margin_top = 6
-theme_override_constants/margin_right = 6
+theme_override_constants/margin_right = 25
 
 [node name="ToolsVBox" type="VBoxContainer" parent="HUD/RightToolsUI" unique_id=842374704]
 layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="KeroseneGroup" type="VBoxContainer" parent="HUD/RightToolsUI/ToolsVBox" unique_id=709580120]
+layout_mode = 2
 theme_override_constants/separation = 2
 
-[node name="ShotgunLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox" unique_id=1513491613]
-unique_name_in_owner = true
+[node name="KeroseneRow" type="HBoxContainer" parent="HUD/RightToolsUI/ToolsVBox/KeroseneGroup" unique_id=192599600]
 layout_mode = 2
-theme_override_font_sizes/font_size = 7
-text = "[1] Escopeta: 4"
+theme_override_constants/separation = 4
 
-[node name="KeroseneLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox" unique_id=177756074]
-unique_name_in_owner = true
+[node name="Icon" type="TextureRect" parent="HUD/RightToolsUI/ToolsVBox/KeroseneGroup/KeroseneRow" unique_id=1399889778]
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
 layout_mode = 2
-theme_override_font_sizes/font_size = 7
-text = "[2] Kerosene: 5"
+texture = ExtResource("9_torch")
+expand_mode = 1
+stretch_mode = 5
 
-[node name="CameraLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox" unique_id=1407329626]
+[node name="KeroseneLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox/KeroseneGroup/KeroseneRow" unique_id=1031653382]
 unique_name_in_owner = true
 layout_mode = 2
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
 theme_override_font_sizes/font_size = 7
-text = "[3] Cámara: 3"
+text = "x 5"
 
-[node name="ShoutLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox" unique_id=1698058108]
+[node name="KeroseneUsarButton" type="Button" parent="HUD/RightToolsUI/ToolsVBox/KeroseneGroup/KeroseneRow" unique_id=2147242959]
 unique_name_in_owner = true
 layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
 theme_override_font_sizes/font_size = 7
-text = "[4] Gritar (Listo)"
+theme_override_styles/normal = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bordered_disabled")
+text = "Usar"
+
+[node name="KeroseneCooldownBar" type="ProgressBar" parent="HUD/RightToolsUI/ToolsVBox/KeroseneGroup" unique_id=1405598936]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cd_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_cd_fill")
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="CameraGroup" type="VBoxContainer" parent="HUD/RightToolsUI/ToolsVBox" unique_id=1722948793]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="CameraRow" type="HBoxContainer" parent="HUD/RightToolsUI/ToolsVBox/CameraGroup" unique_id=1541693951]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="HUD/RightToolsUI/ToolsVBox/CameraGroup/CameraRow" unique_id=343437545]
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("10_camera")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="CameraLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox/CameraGroup/CameraRow" unique_id=569297271]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+text = "x 3"
+
+[node name="CameraUsarButton" type="Button" parent="HUD/RightToolsUI/ToolsVBox/CameraGroup/CameraRow" unique_id=151080116]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+theme_override_styles/normal = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bordered_disabled")
+text = "Usar"
+
+[node name="CameraCooldownBar" type="ProgressBar" parent="HUD/RightToolsUI/ToolsVBox/CameraGroup" unique_id=1055036406]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cd_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_cd_fill")
+max_value = 1.0
+step = 0.0
+show_percentage = false
+
+[node name="ShotgunGroup" type="VBoxContainer" parent="HUD/RightToolsUI/ToolsVBox" unique_id=1804652999]
+layout_mode = 2
+theme_override_constants/separation = 2
+
+[node name="ShotgunRow" type="HBoxContainer" parent="HUD/RightToolsUI/ToolsVBox/ShotgunGroup" unique_id=259763597]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Icon" type="TextureRect" parent="HUD/RightToolsUI/ToolsVBox/ShotgunGroup/ShotgunRow" unique_id=370269307]
+texture_filter = 1
+custom_minimum_size = Vector2(11, 11)
+layout_mode = 2
+texture = ExtResource("11_shotgun")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="ShotgunLabel" type="Label" parent="HUD/RightToolsUI/ToolsVBox/ShotgunGroup/ShotgunRow" unique_id=1274536252]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+text = "x 4"
+
+[node name="ShotgunUsarButton" type="Button" parent="HUD/RightToolsUI/ToolsVBox/ShotgunGroup/ShotgunRow" unique_id=981834835]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/font_color = Color(0.305882, 0.305882, 0.203922, 1)
+theme_override_font_sizes/font_size = 7
+theme_override_styles/normal = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/hover = SubResource("StyleBoxFlat_bordered")
+theme_override_styles/disabled = SubResource("StyleBoxFlat_bordered_disabled")
+text = "Usar"
+
+[node name="ShotgunCooldownBar" type="ProgressBar" parent="HUD/RightToolsUI/ToolsVBox/ShotgunGroup" unique_id=711599614]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 2)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_cd_bg")
+theme_override_styles/fill = SubResource("StyleBoxFlat_cd_fill")
+max_value = 1.0
+step = 0.0
+show_percentage = false
 
 [node name="PauseMenu" parent="HUD" unique_id=460402996 instance=ExtResource("4_pause_menu")]
 unique_name_in_owner = true

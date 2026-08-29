@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://dmgf1d3knrm3v" path="res://scripts/ui/main_menu.gd" id="1_main_menu"]
 [ext_resource type="FontFile" uid="uid://dvh35nyfc4q0n" path="res://assets/fonts/MajorMonoDisplay-Regular.ttf" id="2_m1kxf"]
-[ext_resource type="FontFile" uid="uid://bphbnuwhri1vg" path="res://assets/fonts/mago2.ttf" id="4_uhagc"]
+[ext_resource type="FontFile" uid="uid://byrleo62oanrk" path="res://assets/fonts/BitcountGridSingle_Roman-Light.ttf" id="4_uhagc"]
 
 [node name="MainMenu" type="Control" unique_id=141187808]
 layout_mode = 3
@@ -20,7 +20,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-color = Color(0.04, 0.06, 0.08, 1)
+color = Color(0, 0, 0, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="." unique_id=1849141252]
 layout_mode = 1
@@ -41,6 +41,7 @@ alignment = 1
 
 [node name="TitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=309876427]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.30588236, 0.30588236, 0.20392157, 1)
 theme_override_fonts/font = ExtResource("2_m1kxf")
 theme_override_font_sizes/font_size = 16
 text = "A darker forest"
@@ -48,13 +49,13 @@ horizontal_alignment = 1
 
 [node name="SubtitleLabel" type="Label" parent="MarginContainer/VBoxContainer" unique_id=455281351]
 layout_mode = 2
-theme_override_colors/font_color = Color(0.6, 0.7, 0.75, 1)
 theme_override_fonts/font = ExtResource("4_uhagc")
 theme_override_font_sizes/font_size = 16
 text = "careful who you trust"
 horizontal_alignment = 1
 
 [node name="HSeparator" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=384942103]
+visible = false
 custom_minimum_size = Vector2(0, 6)
 layout_mode = 2
 
@@ -68,33 +69,37 @@ theme_override_constants/separation = 4
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 18)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.30588236, 0.30588236, 0.20392157, 1)
 theme_override_fonts/font = ExtResource("4_uhagc")
 theme_override_font_sizes/font_size = 16
-text = "enter the forest"
+text = "Enter the forest"
 
 [node name="SettingsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=893835893]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 18)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.30588236, 0.30588236, 0.20392157, 1)
 theme_override_fonts/font = ExtResource("4_uhagc")
 theme_override_font_sizes/font_size = 16
-text = "settings"
+text = "Settings"
 
 [node name="CreditsButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=1501819822]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 18)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.30588236, 0.30588236, 0.20392157, 1)
 theme_override_fonts/font = ExtResource("4_uhagc")
 theme_override_font_sizes/font_size = 16
-text = "credits"
+text = "Credits"
 
 [node name="QuitButton" type="Button" parent="MarginContainer/VBoxContainer/ButtonsVBox" unique_id=1111461741]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(120, 18)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.30588236, 0.30588236, 0.20392157, 1)
 theme_override_fonts/font = ExtResource("4_uhagc")
 theme_override_font_sizes/font_size = 16
-text = "quit"
+text = "Quit"
 
 [node name="HSeparator2" type="HSeparator" parent="MarginContainer/VBoxContainer" unique_id=1333166393]
 visible = false

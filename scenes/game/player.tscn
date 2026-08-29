@@ -1,61 +1,118 @@
-[gd_scene load_steps=7 format=3 uid="uid://player_scene_01"]
+[gd_scene format=3 uid="uid://i6xxdok7i61o"]
 
-[ext_resource type="Script" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Script" uid="uid://cpdqxibtvh75x" path="res://scripts/player/player.gd" id="1_player"]
+[ext_resource type="Texture2D" uid="uid://ds6lba0q7ax2l" path="res://assets/player/player_idle_1.png" id="2_idle"]
+[ext_resource type="Texture2D" uid="uid://cc05v813c3ggx" path="res://assets/player/player_walk_1.png" id="3_walk"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hunter"]
 size = Vector2(10, 24)
 
-[sub_resource type="Gradient" id="Gradient_eyes"]
-colors = PackedColorArray(1, 0.95, 0.7, 1, 0, 0, 0, 0)
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_0"]
+atlas = ExtResource("2_idle")
+region = Rect2(0, 0, 24, 24)
 
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_eyes"]
-gradient = SubResource("Gradient_eyes")
-width = 16
-height = 16
+[sub_resource type="AtlasTexture" id="AtlasTexture_idle_1"]
+atlas = ExtResource("2_idle")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_0"]
+atlas = ExtResource("3_walk")
+region = Rect2(0, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_1"]
+atlas = ExtResource("3_walk")
+region = Rect2(24, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_2"]
+atlas = ExtResource("3_walk")
+region = Rect2(48, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_3"]
+atlas = ExtResource("3_walk")
+region = Rect2(72, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_4"]
+atlas = ExtResource("3_walk")
+region = Rect2(96, 0, 24, 24)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_walk_5"]
+atlas = ExtResource("3_walk")
+region = Rect2(120, 0, 24, 24)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_hunter"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_idle_1")
+}],
+"loop": 1,
+"name": &"idle",
+"speed": 1.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_1")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_3")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_4")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_walk_5")
+}],
+"loop": 1,
+"name": &"walk",
+"speed": 5.0
+}]
+
+[sub_resource type="Gradient" id="Gradient_vision_mask"]
+offsets = PackedFloat32Array(0.028301887, 0.056603774)
+colors = PackedColorArray(0, 0, 0, 0, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_vision_mask"]
+gradient = SubResource("Gradient_vision_mask")
+width = 768
+height = 768
 fill = 1
 fill_from = Vector2(0.5, 0.5)
 
-[sub_resource type="Gradient" id="Gradient_torch"]
-colors = PackedColorArray(0.9, 0.8, 0.5, 1, 0, 0, 0, 0)
-
-[sub_resource type="GradientTexture2D" id="GradientTexture2D_torch"]
-gradient = SubResource("Gradient_torch")
-width = 128
-height = 128
-fill = 1
-fill_from = Vector2(0.5, 0.5)
-
-[node name="Player" type="CharacterBody2D"]
+[node name="Player" type="CharacterBody2D" unique_id=1065852354]
 script = ExtResource("1_player")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1836403452]
 position = Vector2(0, -12)
 shape = SubResource("RectangleShape2D_hunter")
 
-[node name="HunterSprite" type="ColorRect" parent="."]
+[node name="HunterSprite" type="AnimatedSprite2D" parent="." unique_id=1883604]
 unique_name_in_owner = true
-offset_left = -5.0
-offset_top = -24.0
-offset_right = 5.0
-color = Color(0.08, 0.1, 0.09, 1)
-
-[node name="EyesLight" type="PointLight2D" parent="."]
-unique_name_in_owner = true
-position = Vector2(2, -20)
-energy = 1.2
-texture = SubResource("GradientTexture2D_eyes")
-
-[node name="TorchLight" type="PointLight2D" parent="."]
-unique_name_in_owner = true
+texture_filter = 1
 position = Vector2(0, -12)
-energy = 1.4
-texture = SubResource("GradientTexture2D_torch")
-texture_scale = 1.4
+sprite_frames = SubResource("SpriteFrames_hunter")
+animation = &"walk"
 
-[node name="Camera2D" type="Camera2D" parent="."]
+[node name="VisionMask" type="Sprite2D" parent="." unique_id=1744861250]
+unique_name_in_owner = true
+z_index = 10
+position = Vector2(0, -12)
+texture = SubResource("GradientTexture2D_vision_mask")
+
+[node name="TorchIgniteSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=1239197422]
 unique_name_in_owner = true
 position = Vector2(60, -30)
-process_callback = 1
 position_smoothing_enabled = true
 position_smoothing_speed = 6.0
 drag_horizontal_enabled = true
