@@ -25,6 +25,30 @@ extends Node2D
 @onready var kerosene_cooldown_bar: ProgressBar = %KeroseneCooldownBar
 @onready var camera_cooldown_bar: ProgressBar = %CameraCooldownBar
 @onready var pause_menu: Control = %PauseMenu
+@onready var game_over_overlay: Control = %GameOverOverlay
+
+@onready var packing_sound: AudioStreamPlayer = %PackingSound
+@onready var random_detail_sound: AudioStreamPlayer = %RandomDetailSound
+@onready var random_detail_timer: Timer = %RandomDetailTimer
+
+@onready var heart_pulse_icon: TextureRect = %HeartPulse
+
+## Separación entre los dos golpes seguidos del latido (lub-dub).
+@export var heart_beat_gap: float = 0.15
+## Pausa antes de repetir el par de golpes. Ajustá ambos para calzar con el audio.
+@export var heart_beat_pause: float = 0.85
+
+var _heartbeat_active: bool = false
+
+# Detalles ambientales sueltos que se solapan al loop base de tanto en tanto
+# (no son loops en sí, son variaciones puntuales para que el fondo no se sienta estático).
+const RANDOM_DETAIL_SOUNDS: Array[AudioStream] = [
+	preload("res://assets/audio/random_sfx_creek.mp3"),
+	preload("res://assets/audio/random_sfx_drone.mp3"),
+	preload("res://assets/audio/random_sfx_wind.mp3"),
+]
+const RANDOM_DETAIL_MIN_INTERVAL: float = 25.0
+const RANDOM_DETAIL_MAX_INTERVAL: float = 60.0
 
 func _ready() -> void:
 	_apply_ground_surface_y()
@@ -34,7 +58,43 @@ func _ready() -> void:
 	shotgun_usar_button.pressed.connect(_use_shotgun)
 	kerosene_usar_button.pressed.connect(_use_kerosene)
 	camera_usar_button.pressed.connect(_use_camera)
+	random_detail_timer.timeout.connect(_on_random_detail_timeout)
+	GameManager.game_over_triggered.connect(_on_game_over_triggered)
+	GameManager.heartbeat_changed.connect(_on_heartbeat_changed)
 	_update_hud_display()
+	packing_sound.play()
+	_schedule_next_random_detail()
+
+func _on_game_over_triggered(_ending_reason: String) -> void:
+	game_over_overlay.show_results()
+
+func _on_heartbeat_changed(active: bool) -> void:
+	_heartbeat_active = active
+	if active:
+		_run_heart_pulse_loop()
+
+func _run_heart_pulse_loop() -> void:
+	while _heartbeat_active:
+		_pulse_heart_icon()
+		await get_tree().create_timer(heart_beat_gap).timeout
+		if not _heartbeat_active:
+			break
+		_pulse_heart_icon()
+		await get_tree().create_timer(heart_beat_pause).timeout
+
+func _pulse_heart_icon() -> void:
+	var tween := create_tween()
+	tween.tween_property(heart_pulse_icon, "scale", Vector2(1.3, 1.3), 0.08)
+	tween.tween_property(heart_pulse_icon, "scale", Vector2(1.0, 1.0), 0.12)
+
+func _on_random_detail_timeout() -> void:
+	random_detail_sound.stream = RANDOM_DETAIL_SOUNDS[randi() % RANDOM_DETAIL_SOUNDS.size()]
+	random_detail_sound.play()
+	_schedule_next_random_detail()
+
+func _schedule_next_random_detail() -> void:
+	random_detail_timer.wait_time = randf_range(RANDOM_DETAIL_MIN_INTERVAL, RANDOM_DETAIL_MAX_INTERVAL)
+	random_detail_timer.start()
 
 func _unhandled_input(event: InputEvent) -> void:
 	if GameManager.current_state != GameManager.GameState.PLAYING:
@@ -51,6 +111,10 @@ func _unhandled_input(event: InputEvent) -> void:
 			_use_camera()
 		KEY_SPACE:
 			_report_resource_use(GameManager.try_shout(), "\"¡Hola!?\" — tu voz se pierde entre los árboles.", "Necesitas esperar antes de volver a gritar.")
+		KEY_0:
+			# DEBUG: quita 1 corazón para probar sonidos de daño/muerte/latido sin encuentros reales.
+			GameManager.take_damage(1, "una herida de prueba (tecla 0)")
+			update_log_text("[DEBUG] Recibes daño de prueba.")
 
 func _use_shotgun() -> void:
 	if GameManager.bullets <= 0:

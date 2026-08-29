@@ -3,6 +3,17 @@
 [ext_resource type="Script" uid="uid://cpdqxibtvh75x" path="res://scripts/player/player.gd" id="1_player"]
 [ext_resource type="Texture2D" uid="uid://ds6lba0q7ax2l" path="res://assets/player/player_idle_1.png" id="2_idle"]
 [ext_resource type="Texture2D" uid="uid://cc05v813c3ggx" path="res://assets/player/player_walk_1.png" id="3_walk"]
+[ext_resource type="AudioStream" uid="uid://dl6ryuw2cwrgs" path="res://assets/audio/torch_ignite_sfx.mp3" id="4_torch_sfx"]
+[ext_resource type="AudioStream" uid="uid://bcmxoo4slo2sv" path="res://assets/audio/camera_flash_sfx.mp3" id="5_camera_sfx"]
+[ext_resource type="AudioStream" uid="uid://beidu2yi11f8p" path="res://assets/audio/shout_sfx.mp3" id="6_shout_sfx"]
+[ext_resource type="AudioStream" uid="uid://csvyhf62fh7e0" path="res://assets/audio/shotgun_short_sfx.mp3" id="7_shotgun_sfx"]
+[ext_resource type="AudioStream" uid="uid://njdau1gkf5g" path="res://assets/audio/shotgun_long_sfx.mp3" id="7b_shotgun_long_sfx"]
+[ext_resource type="AudioStream" uid="uid://ckces06p3pgyl" path="res://assets/audio/step_1.mp3" id="8_step_1"]
+[ext_resource type="AudioStream" uid="uid://bhyjalsqrj8je" path="res://assets/audio/step_2.mp3" id="9_step_2"]
+[ext_resource type="AudioStream" uid="uid://fy2cmbrhyfga" path="res://assets/audio/step_3.mp3" id="10_step_3"]
+[ext_resource type="AudioStream" uid="uid://y8631agspk7f" path="res://assets/audio/step_4.mp3" id="11_step_4"]
+[ext_resource type="AudioStream" uid="uid://cm2w35puip3fa" path="res://assets/audio/step_5.mp3" id="12_step_5"]
+[ext_resource type="AudioStream" uid="uid://07555wsrafxc" path="res://assets/audio/step_6.mp3" id="13_step_6"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hunter"]
 size = Vector2(10, 24)
@@ -89,6 +100,7 @@ fill_from = Vector2(0.5, 0.5)
 
 [node name="Player" type="CharacterBody2D" unique_id=1065852354]
 script = ExtResource("1_player")
+footstep_sounds = Array[AudioStream]([ExtResource("8_step_1"), ExtResource("9_step_2"), ExtResource("10_step_3"), ExtResource("11_step_4"), ExtResource("12_step_5"), ExtResource("13_step_6")])
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1836403452]
 position = Vector2(0, -12)
@@ -109,6 +121,27 @@ texture = SubResource("GradientTexture2D_vision_mask")
 
 [node name="TorchIgniteSound" type="AudioStreamPlayer" parent="."]
 unique_name_in_owner = true
+stream = ExtResource("4_torch_sfx")
+bus = &"SFX"
+
+[node name="FootstepSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+bus = &"SFX"
+
+[node name="CameraFlashSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("5_camera_sfx")
+bus = &"SFX"
+
+[node name="ShoutSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("6_shout_sfx")
+bus = &"SFX"
+
+[node name="ShotgunSound" type="AudioStreamPlayer" parent="."]
+unique_name_in_owner = true
+stream = ExtResource("7b_shotgun_long_sfx")
+bus = &"SFX"
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1239197422]
 unique_name_in_owner = true

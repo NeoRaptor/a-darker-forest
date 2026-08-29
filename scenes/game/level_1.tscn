@@ -11,6 +11,10 @@
 [ext_resource type="Texture2D" uid="uid://bhucmoifh8ttv" path="res://assets/ui/icon_torch.png" id="9_torch"]
 [ext_resource type="Texture2D" uid="uid://de15ab1e2cohw" path="res://assets/ui/icon_camera.png" id="10_camera"]
 [ext_resource type="Texture2D" uid="uid://b123kygvjtn5a" path="res://assets/ui/icon_shotgun.png" id="11_shotgun"]
+[ext_resource type="AudioStream" uid="uid://br7s0ufldlfgt" path="res://assets/audio/ambient_forest_loop_1.mp3" id="12_ambient_1"]
+[ext_resource type="AudioStream" uid="uid://c2lvqxb81bx0j" path="res://assets/audio/ambient_forest_loop_2.mp3" id="13_ambient_2"]
+[ext_resource type="AudioStream" uid="uid://dmf003tkpi2po" path="res://assets/audio/packing_stuff_sfx.mp3" id="15_packing_sfx"]
+[ext_resource type="PackedScene" path="res://scenes/ui/game_over.tscn" id="16_game_over"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_ground"]
 size = Vector2(2780, 40)
@@ -59,7 +63,9 @@ bg_color = Color(0.305882, 0.305882, 0.203922, 1)
 
 [node name="Level1" type="Node2D" unique_id=1327072676]
 script = ExtResource("1_level_1")
-ground_surface_y = 166.0
+ground_surface_y = 164.0
+heart_beat_gap = 0.18
+heart_beat_pause = 1.4
 
 [node name="ParallaxBackground" parent="." unique_id=1430417536 instance=ExtResource("2_parallax")]
 
@@ -89,6 +95,30 @@ vision_mask_opacity = 0.8
 torch_duration = 25.0
 camera_flash_duration = 0.2
 
+[node name="Audio" type="Node" parent="." unique_id=96087576]
+process_mode = 3
+
+[node name="AmbientLoop1" type="AudioStreamPlayer" parent="Audio" unique_id=1269116785]
+stream = ExtResource("12_ambient_1")
+autoplay = true
+
+[node name="AmbientLoop2" type="AudioStreamPlayer" parent="Audio" unique_id=1701240881]
+stream = ExtResource("13_ambient_2")
+autoplay = true
+
+[node name="PackingSound" type="AudioStreamPlayer" parent="Audio" unique_id=164843336]
+unique_name_in_owner = true
+stream = ExtResource("15_packing_sfx")
+
+[node name="RandomDetailSound" type="AudioStreamPlayer" parent="Audio" unique_id=2143118180]
+unique_name_in_owner = true
+volume_db = -5.571
+
+[node name="RandomDetailTimer" type="Timer" parent="Audio" unique_id=1525194662]
+unique_name_in_owner = true
+wait_time = 35.0
+one_shot = true
+
 [node name="HUD" type="CanvasLayer" parent="." unique_id=1405003298]
 layer = 10
 
@@ -103,8 +133,10 @@ layout_mode = 2
 theme_override_constants/separation = 3
 
 [node name="HeartPulse" type="TextureRect" parent="HUD/TopLeftUI/HPBox" unique_id=1546821459]
+unique_name_in_owner = true
 texture_filter = 1
 custom_minimum_size = Vector2(20, 20)
+pivot_offset = Vector2(10, 10)
 layout_mode = 2
 texture = ExtResource("6_heart_pulse")
 expand_mode = 1
@@ -357,3 +389,6 @@ show_percentage = false
 [node name="PauseMenu" parent="HUD" unique_id=460402996 instance=ExtResource("4_pause_menu")]
 unique_name_in_owner = true
 visible = false
+
+[node name="GameOverOverlay" parent="HUD" unique_id=1836107760 instance=ExtResource("16_game_over")]
+unique_name_in_owner = true
